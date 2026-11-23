@@ -195,8 +195,7 @@ async function runVerification() {
   const settings = await prisma.siteSettings.findUnique({ where: { id: "default" } });
   assert(settings?.companyName === "Al-Ameera Apparel (Pvt.) Ltd.", "Company name verified in SiteSettings");
   assert(settings?.workforce === 280, "Workforce confirmed at 280 personnel");
-  assert(settings?.address.includes("Plot 27, Mehran Town"), "Factory address verified in Mehran Town Sector 23 Korangi");
-
+  assert(settings?.address.includes("Plot 27, Mehran Town") === true, "Factory address verified in Mehran Town Sector 23 Korangi");
   // -------------------------------------------------------------------------
   // Summary
   // -------------------------------------------------------------------------
