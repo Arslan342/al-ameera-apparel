@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#162542"/>
+      <stop offset="100%" stop-color="#0A1222"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="12" y1="28.5" x2="36" y2="28.5" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#C8A042"/>
+      <stop offset="50%" stop-color="#EED484"/>
+      <stop offset="100%" stop-color="#C8A042"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg)"/>
+  <rect x="3" y="3" width="42" height="42" rx="9" stroke="#D4AF37" stroke-opacity="0.35" stroke-width="1"/>
+  <path d="M 19.5 35.5 L 28.7 12.5 L 30.1 12.5 L 39.3 35.5" stroke="#CBD5E1" stroke-width="2.9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 8.7 35.5 L 17.9 12.5 L 19.3 12.5 L 28.5 35.5" stroke="#FFFFFF" stroke-width="2.9" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="12.6" y1="28.5" x2="35.4" y2="28.5" stroke="url(#gold)" stroke-width="2.1" stroke-linecap="round"/>
+  <polygon points="24,21.2 26.2,23.5 24,25.8 21.8,23.5" fill="#E6C56B"/>
+</svg>

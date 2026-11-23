@@ -1,0 +1,149 @@
+// Prisma schema for Al-Ameera Apparel (Pvt.) Ltd.
+// Production-grade B2B Garment Manufacturing Management Platform
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         String   @default("ADMIN") // SUPERADMIN, ADMIN
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([email])
+}
+
+model Category {
+  id           String    @id @default(cuid())
+  name         String    @unique
+  slug         String    @unique
+  description  String?
+  image        String?
+  displayOrder Int       @default(0)
+  products     Product[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([slug])
+}
+
+model Product {
+  id               String                 @id @default(cuid())
+  name             String
+  slug             String                 @unique
+  sku              String?
+  description      String
+  fabricDetails    String?
+  sizes            String                 @default("[\"S\",\"M\",\"L\",\"XL\",\"XXL\"]") // JSON array string
+  colors           String                 @default("[\"Navy\",\"Black\",\"Grey\",\"White\"]") // JSON array string
+  availability     String                 @default("MADE_TO_ORDER") // IN_PRODUCTION, MADE_TO_ORDER, SAMPLE_AVAILABLE
+  minOrderQuantity String?                @default("500 pcs [Production MOQ]")
+  isFeatured       Boolean                @default(false)
+  isDemo           Boolean                @default(false)
+  categoryId       String
+  category         Category               @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  images           ProductImage[]
+  specifications   ProductSpecification[]
+  inquiryItems     InquiryItem[]
+  inquiries        Inquiry[]
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime               @updatedAt
+
+  @@index([slug])
+  @@index([categoryId])
+  @@index([isFeatured])
+}
+
+model ProductImage {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
+  alt       String?
+  isPrimary Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([productId])
+}
+
+model ProductSpecification {
+  id           String   @id @default(cuid())
+  productId    String
+  product      Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  key          String   // e.g., "GSM", "Fabric Composition", "Weave Type", "Yarn Count", "Shrinkage", "Care Instructions"
+  value        String   // e.g., "180 GSM", "100% Combed Cotton", "Single Jersey", "30/1 Combed", "< 4% Warp & Weft", "Machine wash cold"
+  group        String   @default("GENERAL") // GENERAL, TECHNICAL, SIZING, PACKAGING
+  displayOrder Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([productId])
+}
+
+model Inquiry {
+  id                   String        @id @default(cuid())
+  referenceNo          String?       @unique // e.g. ALM-RFQ-2026-0001
+  name                 String
+  company              String?
+  email                String
+  phone                String?
+  country              String?
+  inquiryType          String        @default("BULK_ORDER") // BULK_ORDER, SAMPLE_REQUEST, CUSTOM_MANUFACTURING, GENERAL
+  message              String
+  requestedQuantity    String?
+  sizeRequirements     String?
+  colorRequirements    String?
+  fabricCustomization  String?
+  attachmentUrl        String?
+  privacyConsent       Boolean       @default(true)
+  status               String        @default("NEW") // NEW, UNDER_REVIEW, QUOTATION_SENT, APPROVED, REJECTED, CLOSED
+  adminNotes           String?
+  productId            String?
+  product              Product?      @relation(fields: [productId], references: [id], onDelete: SetNull)
+  items                InquiryItem[]
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+
+  @@index([referenceNo])
+  @@index([status])
+  @@index([email])
+  @@index([createdAt])
+}
+
+model InquiryItem {
+  id                String   @id @default(cuid())
+  inquiryId         String
+  inquiry           Inquiry  @relation(fields: [inquiryId], references: [id], onDelete: Cascade)
+  productId         String
+  product           Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  requestedQuantity Int?
+  size              String?
+  color             String?
+  specifications    String?
+  createdAt         DateTime @default(now())
+
+  @@index([inquiryId])
+  @@index([productId])
+}
+
+model SiteSettings {
+  id           String   @id @default("default")
+  companyName  String   @default("Al-Ameera Apparel (Pvt.) Ltd.")
+  industry     String   @default("Apparel and Garment Manufacturing")
+  workforce    Int      @default(280)
+  address      String   @default("Plot 27, Mehran Town Sector 23, Korangi Industrial Area, Karachi, 74900, Pakistan")
+  postalCode   String   @default("74900")
+  email        String   @default("inquiry@al-ameera.pk")
+  phone        String   @default("+92 21 3500 0000")
+  workingHours String   @default("Mon – Sat: 8:00 AM – 6:00 PM PKT")
+  updatedAt    DateTime @updatedAt
+}
